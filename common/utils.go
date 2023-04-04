@@ -6,9 +6,9 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"github.com/aglyzov/charmap"
+	"github.com/tidwall/gjson"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
-	"github.com/tidwall/gjson"
 	"log"
 	"os"
 	"os/exec"
@@ -106,7 +106,10 @@ func Win32CryptUnprotectData(cipherText string, entropy bool) ([]byte, error) {
 	var outblob DATA_BLOB
 	var inblob = NewBlob([]byte(cipherText))
 
-	checkExist, _, errProcDecryptData := procDecryptData.Call(uintptr(unsafe.Pointer(inblob)), 0, 0, 0, 0, 0, uintptr(unsafe.Pointer(&outblob)))
+	checkExist, _, errProcDecryptData := procDecryptData.Call(
+		uintptr(unsafe.Pointer(inblob)),
+		0, 0, 0, 0, 0,
+		uintptr(unsafe.Pointer(&outblob)))
 
 	if checkExist == 0 {
 		return nil, errProcDecryptData
@@ -126,7 +129,7 @@ func Win32CryptUnprotectData(cipherText string, entropy bool) ([]byte, error) {
 func GetMasterkey(keyFilePath string) ([]byte, error) {
 	res, _ := ioutil.ReadFile(keyFilePath)
 	keyEncrypted, err := base64.StdEncoding.DecodeString(gjson.Get(string(res), "os_crypt.encrypted_key").String())
-	if err != nil{
+	if err != nil {
 		return []byte{}, err
 	}
 	keyEncrypted = keyEncrypted[5:]

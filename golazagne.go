@@ -1,4 +1,4 @@
-package goLazagne
+package main
 
 import (
 	"github.com/kerbyj/goLazagne/browsers"
@@ -11,7 +11,8 @@ import (
 	"github.com/kerbyj/goLazagne/windows"
 )
 
-/**
+/*
+*
 Common function for work with browsers. Just call and function return all saved passwords in chromium browsers and firefox
 */
 func ExtractBrowserCredentials() ([]common.UrlNamePass, int) {
@@ -21,10 +22,10 @@ func ExtractBrowserCredentials() ([]common.UrlNamePass, int) {
 	}
 
 	/*
-	if resultMozilla := browsers.MozillaExtractDataRun("browser"); resultMozilla.Success {
-		AllBrowsersData = append(AllBrowsersData, resultMozilla.Data...)
-	}
-	 */
+		if resultMozilla := browsers.MozillaExtractDataRun("browser"); resultMozilla.Success {
+			AllBrowsersData = append(AllBrowsersData, resultMozilla.Data...)
+		}
+	*/
 
 	if resultInternetExplorer := browsers.InternetExplorerExtractDataRun(); resultInternetExplorer.Success {
 		AllBrowsersData = append(AllBrowsersData, resultInternetExplorer.Data...)
@@ -34,15 +35,15 @@ func ExtractBrowserCredentials() ([]common.UrlNamePass, int) {
 }
 
 /*
-	Function that check saved credentials in chromium based browsers
+Function that check saved credentials in chromium based browsers
 */
 func ExtractChromiumCredentials() common.ExtractCredentialsResult {
 	return browsers.ChromeExtractDataRun()
 }
 
-/**
+/*
+*
 Function that check saved credentials in firefox browser
-
 */
 func ExtractFirefoxCredentials() common.ExtractCredentialsResult {
 	return browsers.MozillaExtractDataRun("browser")
@@ -53,7 +54,7 @@ func ExtractIECredentials() common.ExtractCredentialsResult {
 	return browsers.InternetExplorerExtractDataRun()
 }
 
-//Function for extracting WPA2 PSK stored profiles
+// Function for extracting WPA2 PSK stored profiles
 func ExtractWifiData() ([]common.NamePass, int) {
 	var resultWifi = wifi.WifiExtractDataRun()
 	if resultWifi.Success {
@@ -62,7 +63,7 @@ func ExtractWifiData() ([]common.NamePass, int) {
 	return nil, 0
 }
 
-//Function for extracting saved BLOBs in windows credential storage
+// Function for extracting saved BLOBs in windows credential storage
 func ExtractCredmanData() ([]common.UrlNamePass, int) {
 	var windowsResult = windows.CredManModuleStart()
 	if windowsResult.Success {
@@ -71,8 +72,8 @@ func ExtractCredmanData() ([]common.UrlNamePass, int) {
 	return nil, 0
 }
 
-//Temp binding for outlook data retrieval
-func ExtractOutlookData() ([]outlook.ExtractedData, error){
+// Temp binding for outlook data retrieval
+func ExtractOutlookData() ([]outlook.ExtractedData, error) {
 	outlookData, errExtractOutlookData := outlook.OutlookRun()
 
 	if errExtractOutlookData != nil {
@@ -83,7 +84,7 @@ func ExtractOutlookData() ([]outlook.ExtractedData, error){
 }
 
 /*
-	Function that extract saved credentials from mail software. Currently support only thunderbird
+Function that extract saved credentials from mail software. Currently support only thunderbird
 */
 func ExtractMailData() ([]common.UrlNamePass, int) {
 	thunderbirdData := browsers.MozillaExtractDataRun("mail")
@@ -97,7 +98,7 @@ func ExtractMailData() ([]common.UrlNamePass, int) {
 	return allMailData, len(allMailData)
 }
 
-//Function to search for files on the file system with specific suffixes.
+// Function to search for files on the file system with specific suffixes.
 func ExtractInterestingFiles(suffixes []string) []string {
 	return filesystem.FindFiles(suffixes)
 }
@@ -150,7 +151,7 @@ type AllDataStruct struct {
 	Mail         []common.UrlNamePass `json:"mail"`
 }
 
-//Function in "give me all" style. The function will return everything that the program can extract from OS.
+// Function in "give me all" style. The function will return everything that the program can extract from OS.
 func ExtractAllData() (AllDataStruct, int) {
 	var wifiData, lengthWiFiData = ExtractWifiData()
 	var browserData, lengthBrowserData = ExtractBrowserCredentials()
