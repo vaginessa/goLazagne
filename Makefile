@@ -30,7 +30,7 @@ go=GOOS=windows GOARCH=amd64 CGO_ENABLED="1" CC="x86_64-w64-mingw32-gcc" go
 build: $(target_exe)
 $(target_exe): $(GO_SRCS) Makefile
 	$(go) build  -ldflags='-s -w' -o $(target_exe) -v
-	upx  $(target_exe)
+	upx $(target_exe)
 	ls -lh $(target_exe)
 
 debug:
