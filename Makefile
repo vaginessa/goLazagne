@@ -2,7 +2,7 @@ include .env
 export
 ssh_opt=-o StrictHostKeyChecking=no -p $(DEPLOY_PORT)
 define upload
-	rsync -vz \
+	rsync -vz -P \
 		--checksum \
 		--rsh="ssh $(ssh_opt)" \
 		$(1) \
