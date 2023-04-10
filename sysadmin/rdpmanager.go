@@ -29,7 +29,7 @@ func decryptPassword(encryptedPassword string) string {
 		log.Println("Error decoding password:", err)
 		panic(err)
 	}
-	fmt.Println("decoded:", decoded)
+	//fmt.Println("decoded:", decoded)
 	decryptedPassword, errUnprotectData := common.Win32CryptUnprotectData(string(decoded), false)
 	if errUnprotectData != nil {
 		log.Println("Error decrypting password:", errUnprotectData)
@@ -41,14 +41,14 @@ func decryptPassword(encryptedPassword string) string {
 	return passwordDecrypted
 }
 
-func RDPManagerRun() ([]map[string]string, error) {
+func RDPManagerRun() common.ExtractCredentialsResult {
 	settings := []string{
 		common.LocalAppData + "\\Microsoft Corporation\\Remote Desktop Connection Manager\\RDCMan.settings",
 		common.LocalAppData + "\\Microsoft\\Remote Desktop Connection Manager\\RDCMan.settings",
 		//"/Users/peng/PROGRAM/GitHub/goLazagne/test/rdp.xml",
 	}
 
-	var pwdFound []map[string]string
+	var pwdFound []common.UrlNamePass
 
 	for _, setting := range settings {
 		if _, err := os.Stat(setting); err == nil {
@@ -57,7 +57,7 @@ func RDPManagerRun() ([]map[string]string, error) {
 			xmlFile, err := os.ReadFile(setting)
 			if err != nil {
 				fmt.Println("Error reading file:", err)
-				return nil, err
+				return common.EmptyResult
 			}
 
 			type FilesToOpen struct {
@@ -69,7 +69,7 @@ func RDPManagerRun() ([]map[string]string, error) {
 			err = xml.Unmarshal(xmlFile, &fileToOpens)
 			if err != nil {
 				fmt.Println("Error unmarshalling XML data:", err)
-				return nil, err
+				return common.EmptyResult
 			}
 			for _, item := range fileToOpens.FilesToOpen.Item {
 				if _, err := os.Stat(item); err == nil {
@@ -82,9 +82,12 @@ func RDPManagerRun() ([]map[string]string, error) {
 		}
 	}
 
-	return pwdFound, nil
+	return common.ExtractCredentialsResult{
+		Success: true,
+		Data:    pwdFound,
+	}
 }
-func ParseXml(xmlFile string) ([]map[string]string, error) {
+func ParseXml(xmlFile string) ([]common.UrlNamePass, error) {
 	xmlData, err := os.ReadFile(xmlFile)
 	if err != nil {
 		return nil, err
@@ -103,17 +106,17 @@ func ParseXml(xmlFile string) ([]map[string]string, error) {
 		return nil, err
 	}
 
-	var res []map[string]string
+	var res []common.UrlNamePass
 	for _, server := range servers.Server {
 		password := decryptPassword(server.Password)
 
 		// print the results
-		fmt.Printf("host: %s, Username: %s, Password: %s\n", server.Host, server.UserName, password)
+		//fmt.Printf("host: %s, Username: %s, Password: %s\n", server.Host, server.UserName, password)
 
-		res = append(res, map[string]string{
-			"URL":      server.Host,
-			"Login":    server.UserName,
-			"Password": password,
+		res = append(res, common.UrlNamePass{
+			Url:      server.Host,
+			Username: server.UserName,
+			Pass:     password,
 		})
 	}
 

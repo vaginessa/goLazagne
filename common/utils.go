@@ -33,6 +33,7 @@ type UrlNamePass struct {
 	Url      string
 	Username string
 	Pass     string
+	//From    string
 }
 
 // Structure for extracted credentials that contains only a login and password
@@ -45,6 +46,7 @@ type NamePass struct {
 type ExtractCredentialsResult struct {
 	Success bool
 	Data    []UrlNamePass
+	//Command []string
 }
 
 // Structure for extracted credentials that contains status flag and data array
@@ -81,6 +83,8 @@ func NewBlob(d []byte) *DATA_BLOB {
 		cbData: uint32(len(d)),
 	}
 }
+
+var EmptyResult = ExtractCredentialsResult{false, nil}
 
 /*
 	Start WinAPI decrypt function

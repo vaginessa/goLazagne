@@ -84,7 +84,7 @@ func _export_credentials(tmpDB string, path string) ([]common.UrlNamePass, bool)
 
 	for rows.Next() {
 		rows.Scan(&actionUrl, &username, &password)
-		fmt.Println("actionUrl", actionUrl, username, password)
+		//fmt.Println("actionUrl", actionUrl, username, password)
 		/*
 			Chromium browser use default win cryptapi function named "CryptProtectData" for encrypting saved credentials.
 			Read about DPAPI for more information.
@@ -108,7 +108,7 @@ func _export_credentials(tmpDB string, path string) ([]common.UrlNamePass, bool)
 			if errAesDecrypt != nil {
 				log.Fatalln("DecryptAESPwd", errAesDecrypt.Error())
 			}
-			fmt.Println("newVersionPassword", newVersionPassword)
+			//fmt.Println("newVersionPassword", newVersionPassword)
 			data = append(data, common.UrlNamePass{
 				Url:      actionUrl,
 				Username: username,
